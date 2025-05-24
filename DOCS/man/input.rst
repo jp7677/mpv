@@ -3073,6 +3073,49 @@ Property list
         The state of the tablet tool tip, ``up`` or ``down.``
     ``tablet-pos/tool-stylus-btn1``, ``tablet-pos/tool-stylus-btn2``, ``tablet-pos/tool-stylus-btn3``
         The state of tablet tool side buttons, ``pressed`` or ``released``.
+    ``tablet-pos/pad-focus``
+        Boolean - whether a tablet pad is currently focused.
+    ``tablet-pos/pad-btns/N``
+        The state of the Nth tablet pad button, ``pressed`` or ``released``.
+
+    ::
+
+        tablet_pos_pad_btn1_old = "released"
+        tablet_pos_pad_btn2_old = "released"
+        tablet_pos_pad_btn3_old = "released"
+        tablet_pos_pad_btn4_old = "released"
+        mp.observe_property("tablet-pos", "native", function(name, value)
+                pad_btn1 = value["pad-btns"]["1"]
+                pad_btn2 = value["pad-btns"]["2"]
+                pad_btn3 = value["pad-btns"]["3"]
+                pad_btn4 = value["pad-btns"]["4"]
+
+                if (pad_btn1 ~= "nil" and pad_btn1 ~= tablet_pos_pad_btn1_old and pad_btn1 == "released") then
+                        mp.command("seek -30")
+                end
+
+                if (pad_btn2 ~= tablet_pos_pad_btn2_old and pad_btn2 == "released") then
+                        mp.command("keypress MBTN_RIGHT")
+                end
+
+                if (pad_btn3 ~= tablet_pos_pad_btn3_old and pad_btn3 == "released") then
+                        mp.command("seek 45")
+                end
+
+                if (pad_btn4 ~= tablet_pos_pad_btn4_old and pad_btn4 == "released") then
+                        fs = mp.get_property("fullscreen")
+                        if (fs == "yes") then
+                            mp.set_property("fullscreen", "no")
+                        else
+                            mp.set_property("fullscreen", "yes")
+                        end
+                end
+
+                if (pad_btn1 ~= nil) then tablet_pos_pad_btn1_old = pad_btn1 end
+                if (pad_btn2 ~= nil) then tablet_pos_pad_btn2_old = pad_btn2 end
+                if (pad_btn3 ~= nil) then tablet_pos_pad_btn3_old = pad_btn3 end
+                if (pad_btn4 ~= nil) then tablet_pos_pad_btn4_old = pad_btn4 end
+        end)
 
 ``sub-ass-extradata``
     The current ASS subtitle track's extradata. There is no formatting done.
